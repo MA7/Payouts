@@ -25,7 +25,7 @@ return [
     |
     */
 
-    'zarinpal_api_token' => '3dfdba0e5be4cccbb83b09589492f9552ccfcb60a1003f0c01c7010aa0f652b92462c66a39443132',
+    'zarinpal_api_token' => 'Your api token',
 
     /*
     |--------------------------------------------------------------------------

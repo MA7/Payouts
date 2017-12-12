@@ -76,7 +76,7 @@ class HomeController extends Controller
             $token = config('app.zarinpal_api_token');
             $client = new Client();
             $response = $client->request("get", "https://api.zarinpal.com/rest/v3/purse/$mobile.json", [
-                'headers' => ['Authorization' => 'Bearer ' . $token . ''],
+                'headers' => ['Authorization' => 'Bearer ' . $token],
             ]);
             $content = $response->getBody()->getContents();
             $content = json_decode($content);
@@ -84,11 +84,20 @@ class HomeController extends Controller
                 $zpId = $content->data->zp_id;
                 $name = $content->data->name;
                 $name = explode(' ', $name, 2);
+
+                $client = new Client();
+                $response = $client->request("get", "https://api.zarinpal.com/rest/v3/purse.json", [
+                    'headers' => ['Authorization' => 'Bearer ' . $token],
+                ]);
+                $content = $response->getBody()->getContents();
+                $content = json_decode($content);
+
                 return view('ajax-settlement-form', [
                     'zp' => $zpId,
                     'name' => $name[0],
                     'mobile' => $mobile,
-                    'family' => isset($name[1]) ? $name[1] : null
+                    'family' => isset($name[1]) ? $name[1] : null,
+                    'purses' => $content->data
                 ])->render();
             } else {
                 return response()->json([
@@ -132,20 +141,22 @@ class HomeController extends Controller
         $birthdate = $request->input('birth-date');
 
         try {
-            $token = config('app.zarinpal_api_token');
             $client = new Client();
-            $response = $client->request("post", "https://api.zarinpal.com/rest/v3/oauth/registerUser.json", [
-                'headers' => ['Authorization' => 'Bearer ' . $token . ''],
-                'body' => [
-                    "first_name" => $name,
-                    "last_name" => $family,
-                    "mobile" => $mobile,
-                    "ssn" => $ssn,
-                    "birthday" => $birthdate
-                ]
+            $postParams = [
+                "first_name" => $name,
+                "last_name" => $family,
+                "mobile" => $mobile,
+                "ssn" => $ssn,
+                "birthday" => $birthdate
+            ];
+            $response = $client->request('post', "https://api.zarinpal.com/rest/v3/oauth/registerUser.json", [
+                'form_params' => $postParams
             ]);
             if ($response->getStatusCode() == 200) {
+                $content = $response->getBody()->getContents();
+                $content = json_decode($content);
                 return redirect()->route('add', [
+                    'zp' => $content->data->zp_id,
                     'mobile' => $mobile
                 ]);
             } else {
@@ -156,11 +167,10 @@ class HomeController extends Controller
                 ])->setStatusCode(500);
             }
         } catch (ClientException $exception) {
-            return response()->json([
-                'code' => $exception->getCode(),
-                'error' => 'UnknownError',
-                'message' => $exception->getMessage()
-            ])->setStatusCode(500);
+            $response = $exception->getResponse();
+            $content = $response->getBody()->getContents();
+            $content = json_decode($content);
+            return response()->json($content)->setStatusCode(500);
         } catch (\Exception $exception) {
             throw $exception;
         }
@@ -168,9 +178,63 @@ class HomeController extends Controller
 
     /**
      * Get request data and create one in zarinpal.
+     * @param Request $request
+     * @return $this|\Illuminate\Http\RedirectResponse
+     * @throws \Exception
      */
-    public function createRequest()
+    public function createRequest(Request $request)
     {
+        $purse = $request->input('purse');
+        $amount = $request->input('amount');
+        $description = $request->input('description');
+        $iban = $request->input('iban');
+        $zp = $request->input('zp');
+        $name = $request->input('name');
 
+        try {
+            $token = config('app.zarinpal_api_token');
+            $client = new Client();
+
+            $postParams = [
+                "purse" => $purse,
+                "amount" => $amount,
+                "description" => $description,
+                "zp_id" => $zp,
+                "iban" => $iban,
+                "name" => $name
+            ];
+            $response = $client->request("post", "https://api.zarinpal.com/rest/v3/purse.json", [
+                'headers' => ['Authorization' => 'Bearer ' . $token],
+                'form_params' => $postParams
+
+            ]);
+            $content = $response->getBody()->getContents();
+            $content = json_decode($content);
+            if ($response->getStatusCode() == 200) {
+                $request->session()->flash('status', 'درخواست واریز با موفقیت ثبت شد.');
+
+                $log = new Settlement();
+                $log->name = $request->input('name');
+                $log->family = $request->input('family');
+                $log->mobile = $request->input('mobile');
+                $log->zp = $zp;
+                $log->purseId = $purse;
+                $log->iban = $iban;
+                $log->amount = $amount;
+                $log->description = $description;
+                $log->createAt = date('Y-m-d H:i');
+                $log->save();
+            } else {
+                $request->session()->flash('status', 'در ارسال درخواست مشکلی به وجود آمده است.');
+            }
+            return redirect()->route('home');
+        } catch (ClientException $exception) {
+            $response = $exception->getResponse();
+            $content = $response->getBody()->getContents();
+            $content = json_decode($content);
+            return response()->json($content)->setStatusCode(500);
+        } catch (\Exception $exception) {
+            throw $exception;
+        }
     }
 }

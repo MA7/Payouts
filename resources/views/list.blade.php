@@ -26,7 +26,7 @@
                         @foreach($settlements as $key => $value)
                             <tr>
                                 <td>{{ $value->zp }}</td>
-                                <td>{{ $value->FullName }}</td>
+                                <td>{{ $value->getFullName() }}</td>
                                 <td>{{ $value->mobile }}</td>
                                 <td>{{ $value->amount }}</td>
                                 <td>{{ $value->createAt }}</td>

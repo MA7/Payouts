@@ -3,6 +3,7 @@
 /** @var string $name First name of user. */
 /** @var string $family $family name of user. */
 /** @var string $mobile User mobile to register. */
+/** @var string $purses User mobile to register. */
 ?>
 <h4>
     تکمیل فرم درخواست واریز برای {{$name}} {{$family}} ({{$mobile}})
@@ -11,11 +12,19 @@
 <br>
 <form action="{{route('settlement.create')}}" method="post">
     {{ csrf_field() }}
+    <input type="hidden" name="zp" value="{{$zp}}">
+    <input type="hidden" name="name" value="{{$name}}">
+    <input type="hidden" name="family" value="{{$family}}">
+    <input type="hidden" name="mobile" value="{{$mobile}}">
     <div class="form-group row">
         <label for="purse" style="text-align: left;" class="col-sm-2 col-form-label col-form-label-lg">کیف پول
             مبدا</label>
         <div class="col-sm-10">
-            <input type="text" class="form-control form-control-sm" id="purse">
+            <select type="text" class="form-control form-control-sm" name="purse" id="purse">
+                @foreach ($purses as $purse)
+                    <option value="{{$purse->purse}}">{{$purse->name}}</option>
+                @endforeach
+            </select>
         </div>
     </div>
     <div class="form-group row">

@@ -18,8 +18,6 @@ class CreateSettlementsTable extends Migration
             $table->string('name');
             $table->string('family');
             $table->string('mobile', 12);
-            $table->string('ssn', 10);
-            $table->string('birthDate');
             $table->string('zp')->nullable(false);
             $table->integer('purseId')->nullable(false);
             $table->string('iban')->nullable(false);

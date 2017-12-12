@@ -12,17 +12,12 @@ use Illuminate\Database\Eloquent\Model;
  * @property    string $name
  * @property    string $family
  * @property    string $mobile
- * @property    string $ssn
- * @property    string $birthDate
  * @property    string $zp
  * @property    integer $purseId
  * @property    string $iban
  * @property    double $amount
  * @property    string $description
  * @property    string $createAt
- *
- * @property    string $FullName   read-only
- * @property    string $JalaliDate   read-only
  *
  * @package App
  */
@@ -49,13 +44,12 @@ class Settlement extends Model
      */
     protected $dateFormat = 'Y-m-d H:i';
 
-
     /**
-     * The attributes that are mass assignable.
+     * Indicates if the model should be timestamped.
      *
-     * @var array
+     * @var bool
      */
-//    protected $fillable = array('name', 'type', 'danger_level');
+    public $timestamps = false;
 
     /**
      * Return full name of user.
