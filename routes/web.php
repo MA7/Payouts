@@ -11,10 +11,14 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
+Route::get('/', 'HomeController@index')->name('home');
+Route::get('/settlements', 'HomeController@settlementsList')->name('list');
+Route::get('/settlements/add', 'HomeController@addSettlement')->name('add');
+
+Route::post('/settlements/register', 'HomeController@registerNewUser')->name('register.user');
+Route::post('/settlements/create', 'HomeController@createRequest')->name('settlement.create');
+
+// Ajax request.
+Route::get('/settlements/checkMobile.json', 'HomeController@getCheckMobile')->name('getCheckMobile');
