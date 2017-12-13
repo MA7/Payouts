@@ -201,9 +201,9 @@ class HomeController extends Controller
                 "description" => $description,
                 "zp_id" => $zp,
                 "iban" => $iban,
-                "name" => $name
+//                "name" => $name
             ];
-            $response = $client->request("post", "https://api.zarinpal.com/rest/v3/purse.json", [
+            $response = $client->request("post", "https://www.zarinpal.com/rest/v3/transaction/withdrawToUser.json", [
                 'headers' => ['Authorization' => 'Bearer ' . $token],
                 'form_params' => $postParams
 
