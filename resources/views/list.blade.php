@@ -1,7 +1,6 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="col-md-9">
         <div class="panel panel-default">
             <div class="panel-heading">لیست درخواست های واریز</div>
 
@@ -39,5 +38,4 @@
                 @endif
             </div>
         </div>
-    </div>
 @endsection

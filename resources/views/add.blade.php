@@ -1,7 +1,6 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="col-md-9">
         <div class="panel panel-default">
             <div class="panel-heading">ایجاد درخواست واریز جدید</div>
 
@@ -24,7 +23,6 @@
                 <div class="register_form" id="response_form"></div>
             </div>
         </div>
-    </div>
 @endsection
 @section('javascriptBlock')
     <script>

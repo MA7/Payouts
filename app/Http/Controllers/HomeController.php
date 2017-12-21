@@ -140,6 +140,15 @@ class HomeController extends Controller
         $ssn = $request->input('ssn');
         $birthdate = $request->input('birth-date');
 
+
+        $validatedData = $request->validate([
+            'first-name' => 'required',
+            'last-name' => 'required',
+            'mobile-number' => 'required',
+            'ssn' => 'required',
+            'birth-date' => 'required',
+        ]);
+
         try {
             $client = new Client();
             $postParams = [
@@ -190,6 +199,15 @@ class HomeController extends Controller
         $iban = $request->input('iban');
         $zp = $request->input('zp');
         $name = $request->input('name');
+
+        $validatedData = $request->validate([
+            'purse' => 'required',
+            'amount' => 'required',
+            'description' => 'required',
+            'iban' => 'required',
+            'zp' => 'required',
+            'name' => 'required',
+        ]);
 
         try {
             $token = config('app.zarinpal_api_token');
