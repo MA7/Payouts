@@ -308,8 +308,8 @@ class HomeController extends Controller
             $err .= 'وضعیت تراکنش : '.$content['data']['confirmed'].'\n';
             $err .= 'توضیحات تراکنش : '.$content['data']['description'].'\n';
             $err .= 'reconciled_at تراکنش : '.$content['data']['reconciled_at'].'\n';
-            if($content['data']['confirmed']=='confirme'){
-                $settlement = Settlement::where('transaction_public_id')->first();
+            if($content['data']['confirmed']=='confirmed'){
+                $settlement = Settlement::where('transaction_public_id',$request->transaction_public_id)->first();
                 $settlement->status=1;
                 $settlement->save();
                 return response()->json([

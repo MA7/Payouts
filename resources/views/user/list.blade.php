@@ -32,7 +32,7 @@
                             <tr>
                                 <td>{{ $value->name }}</td>
                                 <td>
-                                    <a href="/user/changepassword/{{$value->id}}" class="btn btn-primary">تغییر رمز</a>
+                                    <a href="/user/changepas/{{$value->id}}" class="btn btn-primary">تغییر رمز</a>
                                 </td>
                                 <td>{{ $value->created_at }}</td>
                                 <td>{{ $value->updated_at }}</td>
