@@ -40,8 +40,8 @@
                                         {{ ($value->status ==1)?'فعال':'غیر فعال' }}
                                     </a>
                                 </td>
-                                <td>{{ $value->created_at }}</td>
-                                <td>{{ $value->updated_at }}</td>
+                                <td>{{ jDate::forge($value->created_at)->format('datetime')  }}</td>
+                                <td>{{ jDate::forge($value->updated_at)->format('datetime')}}</td>
                             </tr>
                         @endforeach
                         </tbody>

@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
+use Morilog\Jalali\Facades\jDate;
 
 class HomeController extends Controller
 {
@@ -302,7 +303,7 @@ class HomeController extends Controller
                 $err = '';
                 $err .= 'وضعیت تراکنش : ' . $content['data']['confirmed'] . ' <br> ';
                 $err .= 'توضیحات تراکنش : ' . $content['data']['description'] . ' <br> ';
-                $err .= 'تاریخ تسویه : ' . $content['data']['reconciled_at'] . ' <br> ';
+                $err .= 'تاریخ تسویه : ' . jDate::forge($content['data']['reconciled_at'])->format('datetime') . ' <br> ';
 
                 if ($content['data']['confirmed'] == 'confirmed') {
                     $settlement->status = 1;

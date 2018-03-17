@@ -31,14 +31,13 @@
                         <thead>
                         <tr>
                             <td>کد پیگیری</td>
-                            <td>ایحاد کننده درخواست</td>
-                            <td>zp</td>
-                            <td>نام</td>
+                            <td>ایحاد کننده </td>
+                            <td>نام دریافت کننده</td>
                             <td>موبایل</td>
                             <td>مبلغ</td>
                             <td>وضعیت</td>
+                            <td>تاریخ ایجاد درخواست</td>
                             <td>جزییات</td>
-                            <td>تاریخ</td>
                         </tr>
                         </thead>
                         <tbody>
@@ -46,10 +45,9 @@
                             <tr>
                                 <td>{{ $value->withdraw_ref_id }}</td>
                                 <td>{{ $value->user->name }}</td>
-                                <td>{{ $value->zp }}</td>
-                                <td>{{ $value->getFullName() }}</td>
+                                <td>{{ $value->getFullName() }} <br> {{$value->zp}}</td>
                                 <td>{{ $value->mobile }}</td>
-                                <td>{{ $value->amount }}</td>
+                                <td>{{ number_format($value->amount) }}</td>
                                 <td>
                                     @if($value->status==0)
                                         در دست انجام
@@ -57,10 +55,10 @@
 واریز شده
                                     @endif
                                 </td>
+                                <td>{{ jDate::forge($value->created_at)->format('datetime') }}</td>
                                 <td>
                                     <a href="/settlements/inquiry?withdraw_ref_id={{$value->withdraw_ref_id}}"class="">جزییات</a>
                                 </td>
-                                <td>{{ $value->created_at }}</td>
                             </tr>
                         @endforeach
                         </tbody>
