@@ -23,3 +23,12 @@ Route::post('/settlements/create', 'HomeController@createRequest')->name('settle
 // Ajax request.
 Route::get('/settlements/checkMobile.json', 'HomeController@getCheckMobile')->name('getCheckMobile');
 Route::get('/settlements/inquiry.json', 'HomeController@postCheckInquiry')->name('postCheckInquiry');
+
+
+Route::group(['prefix'=>'user'],function (){
+    Route::get('list', 'HomeController@userList')->name('user.list');
+    Route::get('new', 'HomeController@newUser')->name('user.new');
+    Route::post('new', 'HomeController@newUser')->name('user.new');
+    Route::get('changepas/{id}', 'HomeController@userChangePassword')->name('user.changepas');
+    Route::post('changepas/{id}', 'HomeController@userChangePassword')->name('user.changepas');
+});

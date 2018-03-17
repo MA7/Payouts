@@ -90,6 +90,9 @@
                                 <li @if(Request::is('settlements/add')) class="active" @endif>
                                     <a href="{{ route('add') }}">ثبت درخواست جدید</a></li>
 
+                                <li @if(Request::is('user/list')) class="active" @endif>
+                                    <a href="{{ route('user.list') }}">لیست کاربر</a></li>
+
                                 {{--<li @if(Request::is('settlements/inquiry')) class="active" @endif>--}}
                                     {{--<a href="{{ route('inquiry') }}">استعلام</a></li>--}}
                             </ul>

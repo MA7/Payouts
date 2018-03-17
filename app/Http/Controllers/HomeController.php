@@ -4,10 +4,13 @@ namespace App\Http\Controllers;
 
 use aminkt\normalizer\Normalize;
 use App\Settlement;
+use App\User;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Validator;
 
 class HomeController extends Controller
 {
@@ -327,6 +330,73 @@ class HomeController extends Controller
         } catch (\Exception $exception) {
             throw $exception;
         }
+    }
+
+
+    public function userList()
+    {
+        $users = User::orderBy('id','DESC')->get();
+        return view('user.list', [
+            'users' => $users
+        ]);
+    }
+
+
+    public function newUser(Request $request)
+    {
+
+        if ($request->isMethod('get')) {
+            return view('user.new');
+        }
+
+        if ($request->isMethod('post')) {
+            $validator = Validator::make($request->all(),[
+                'name' => 'required|string|max:255',
+                'email' => 'required|string|email|max:255|unique:users',
+                'password' => 'required|string|min:6|confirmed',
+            ]);
+            if($validator->fails()){
+                return redirect::back()
+                    ->withErrors($validator)
+                    ->withInput($request->all());
+            }
+            User::create([
+                'name'=>$request->name,
+                'password' => bcrypt($request->password),
+                'email'=>$request->email
+            ]);
+            return redirect('/user/list');
+        }
+
+    }
+
+
+    public function userChangePassword(Request $request,$id)
+    {
+
+        $user = User::find((int) $id);
+        if(!$user){
+            return '404';
+        }
+        if ($request->isMethod('get')) {
+            return view('user.changepas',compact('user'));
+        }
+
+        if ($request->isMethod('post')) {
+            $validator = Validator::make($request->all(),[
+                'password' => 'required|string|min:6|confirmed',
+            ]);
+            if($validator->fails()){
+                return redirect::back()
+                    ->withErrors($validator)
+                    ->withInput($request->all());
+            }
+            $user->update([
+                'password' => bcrypt($request->password),
+            ]);
+            return redirect('/user/list');
+        }
+
     }
 
 
