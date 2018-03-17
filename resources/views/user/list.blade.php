@@ -23,6 +23,7 @@
                         <tr>
                             <td>نام و نام خانوادگی</td>
                             <td>تغییر رمز عبور</td>
+                            <td>وضعیت</td>
                             <td>ایجاد</td>
                             <td>ویرایش</td>
                         </tr>
@@ -33,6 +34,11 @@
                                 <td>{{ $value->name }}</td>
                                 <td>
                                     <a href="/user/changepas/{{$value->id}}" class="btn btn-primary">تغییر رمز</a>
+                                </td>
+                                <td>
+                                    <a href="/user/status/{{$value->id}}" id="withdraw_ref_id " class="btn btn-primary" >
+                                        {{ ($value->status ==1)?'فعال':'غیر فعال' }}
+                                    </a>
                                 </td>
                                 <td>{{ $value->created_at }}</td>
                                 <td>{{ $value->updated_at }}</td>

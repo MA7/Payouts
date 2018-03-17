@@ -28,6 +28,7 @@ class CreateSettlementsTable extends Migration
             $table->string('withdraw_ref_id');
             $table->double('amount')->nullable(false)->default(0);
             $table->text('description');
+            $table->text('paydescription')->nullable();
             $table->integer('status')->default(0);
             $table->timestamps();
         });

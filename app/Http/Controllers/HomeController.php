@@ -20,7 +20,7 @@ class HomeController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth');
+        $this->middleware(['auth','isActive']);
     }
 
     /**
@@ -40,7 +40,7 @@ class HomeController extends Controller
      */
     public function settlementsList()
     {
-        if(!empty($_GET['s'])){
+        if(isset($_GET['s'])){
             $settlements = Settlement::where('status',(int) $_GET['s'])->orderBy('id','DESC')->get();
         }else{
             $settlements = Settlement::orderBy('id','DESC')->get();
@@ -282,56 +282,58 @@ class HomeController extends Controller
     public function postCheckInquiry(Request $request)
     {
 
+        foreach (Settlement::where('status', 0)->get() as $settlement){
 
-//        $validatedData = $request->validate([
-//            'zp_id' => 'required',
-//            'amount' => 'required',
-//            'transaction_public_id' => 'required',
-//        ]);
+            try {
+                $token = config('app.zarinpal_api_token');
+                $client = new Client();
 
-        try {
-            $token = config('app.zarinpal_api_token');
-            $client = new Client();
+                $postParams = [
+                    "zp_id" => $settlement->zp,
+                    "amount" => $settlement->amount,
+                    "transaction_public_id" => $settlement->transaction_public_id,
+                ];
+                $response = $client->request("post", "https://api.zarinpal.com/rest/v3/transaction/withdrawToUserFollowup.json", [
+                    'headers' => ['Authorization' => 'Bearer ' . $token],
+                    'form_params' => $postParams
 
-            $postParams = [
-                "zp_id"=>$request->zp_id,
-                "amount"=>$request->amount,
-                "transaction_public_id"=>$request->transaction_public_id,
-            ];
-            $response = $client->request("post", "https://api.zarinpal.com/rest/v3/transaction/withdrawToUserFollowup.json", [
-                'headers' => ['Authorization' => 'Bearer ' . $token],
-                'form_params' => $postParams
+                ]);
+                $content = json_decode((string)$response->getBody(), true);
+                $err = '';
+                $err .= 'وضعیت تراکنش : ' . $content['data']['confirmed'] . ' <br> ';
+                $err .= 'توضیحات تراکنش : ' . $content['data']['description'] . ' <br> ';
+                $err .= 'reconciled_at تراکنش : ' . $content['data']['reconciled_at'] . ' <br> ';
 
-            ]);
-            $content = json_decode((string) $response->getBody(), true);
-            $err = '';
-            $err .= 'وضعیت تراکنش : '.$content['data']['confirmed'].'\n';
-            $err .= 'توضیحات تراکنش : '.$content['data']['description'].'\n';
-            $err .= 'reconciled_at تراکنش : '.$content['data']['reconciled_at'].'\n';
-            if($content['data']['confirmed']=='confirmed'){
-                $settlement = Settlement::where('transaction_public_id',$request->transaction_public_id)->first();
-                $settlement->status=1;
+                if ($content['data']['confirmed'] == 'confirmed') {
+                    $settlement->status = 1;
+                }
+                $settlement->paydescription = $err;
                 $settlement->save();
-                return response()->json([
-                    'err' => $err,
-                    'status' => 200
-                ]);
-            }else{
-                return response()->json([
-                    'err' => $err,
-                    'status' => 422
-                ]);
+            } catch (ClientException $exception) {
+                $response = $exception->getResponse();
+                $content = $response->getBody()->getContents();
+                $content = json_decode($content);
+                return response()->json($content)->setStatusCode(500);
+            } catch (\Exception $exception) {
+                throw $exception;
             }
-        } catch (ClientException $exception) {
-            $response = $exception->getResponse();
-            $content = $response->getBody()->getContents();
-            $content = json_decode($content);
-            return response()->json($content)->setStatusCode(500);
-        } catch (\Exception $exception) {
-            throw $exception;
         }
+
+        if(!empty($_GET['withdraw_ref_id'])){
+            return redirect('/settlementShow/'.$_GET['withdraw_ref_id']);
+        }
+        return redirect('/settlements');
+
     }
 
+
+    public function settlementShow($id)
+    {
+        $settlement = Settlement::where('withdraw_ref_id',$id)->first();
+        return view('show', [
+            'settlement' => $settlement
+        ]);
+    }
 
     public function userList()
     {
@@ -396,6 +398,26 @@ class HomeController extends Controller
             ]);
             return redirect('/user/list');
         }
+
+    }
+
+
+    public function userStatus(Request $request,$id)
+    {
+
+        $user = User::find((int) $id);
+        if(!$user){
+            return '404';
+        }
+        if($user->status==1){
+            $user->status=0;
+        }else{
+            $user->status=1;
+        }
+
+        $user->save();
+
+        return redirect('user/list');
 
     }
 

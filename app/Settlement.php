@@ -24,7 +24,7 @@ use Illuminate\Database\Eloquent\Model;
 class Settlement extends Model
 {
     protected $fillable = [
-        'user_id','name','family','mobile','zp','purseId','iban','amount','amount','description','status','transaction_public_id','transfer_ref_id','withdraw_ref_id'
+        'user_id','name','family','mobile','zp','purseId','iban','amount','amount','description','status','transaction_public_id','transfer_ref_id','withdraw_ref_id','paydescription'
     ];
 
     /**

@@ -85,13 +85,13 @@
                             <ul class="sidebar-menu">
                                 <li @if(Request::is('/')) class="active" @endif><a
                                             href="{{ route('home') }}">داشبورد</a></li>
-                                <li @if(Request::is('settlements')) class="active" @endif><a href="{{ route('list') }}">لیست
+                                <li @if(Request::is('settlements')) class="active" @endif><a href="{{ route('list').'?s=0' }}">لیست
                                         درخواست ها</a></li>
                                 <li @if(Request::is('settlements/add')) class="active" @endif>
                                     <a href="{{ route('add') }}">ثبت درخواست جدید</a></li>
 
                                 <li @if(Request::is('user/list')) class="active" @endif>
-                                    <a href="{{ route('user.list') }}">لیست کاربر</a></li>
+                                    <a href="{{ route('user.list') }}">لیست کاربران</a></li>
 
                                 {{--<li @if(Request::is('settlements/inquiry')) class="active" @endif>--}}
                                     {{--<a href="{{ route('inquiry') }}">استعلام</a></li>--}}

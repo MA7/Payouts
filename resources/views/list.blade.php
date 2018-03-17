@@ -8,13 +8,17 @@
                 <!-- will be used to show any messages -->
 
                 <div class="col-sm-2" style="margin: 0 0 20px 20px">
-                    <a href="/settlements?s=1" class="btn btn-primary">نمایش تایید شده ها</a>
+                    <a href="/settlements?s=1" class="btn btn-primary">خاتمه یافته</a>
                 </div>
                 <div class="col-sm-2" style="margin: 0 0 20px 20px">
-                    <a href="/settlements?s=0" class="btn btn-primary">نمایش تایید نشده ها</a>
+                    <a href="/settlements?s=0" class="btn btn-primary">در دست انجام</a>
                 </div>
                 <div class="col-sm-2" style="margin: 0 0 20px 20px">
                     <a href="/settlements" class="btn btn-primary">نمایش همه</a>
+                </div>
+
+                <div class="col-sm-2" style="margin: 0 0 20px 20px">
+                    <a href="/settlements/inquiry" class="btn btn-danger">بروز رسانی وضعیت درخواست ها</a>
                 </div>
 
                 <div style="clear:both;"></div>
@@ -27,7 +31,7 @@
                         <thead>
                         <tr>
                             <td>کد پیگیری</td>
-                            <td>کاربر</td>
+                            <td>ایحاد کننده درخواست</td>
                             <td>zp</td>
                             <td>نام</td>
                             <td>موبایل</td>
@@ -46,9 +50,14 @@
                                 <td>{{ $value->mobile }}</td>
                                 <td>{{ $value->amount }}</td>
                                 <td>
-                                    <button id="withdraw_ref_id " class="btn btn-primary check-inquiry" data-zp="{{ $value->zp }}" data-amount="{{ $value->amount }}" data-transaction_public_id="{{ $value->transaction_public_id }}">
-                                        {{ ($value->status ==1)?'واریز شده':'در انتظار واریز' }}
-                                    </button>
+                                    @if($value->status==0)
+                                        {{--<button id="withdraw_ref_id " class="btn btn-primary check-inquiry" data-zp="{{ $value->zp }}" data-amount="{{ $value->amount }}" data-transaction_public_id="{{ $value->transaction_public_id }}">--}}
+                                            {{--{{ ($value->status ==1)?'خاتمه یافته':'در دست انجام' }}--}}
+                                        {{--</button>--}}
+                                        <a href="/settlements/inquiry?withdraw_ref_id={{$value->withdraw_ref_id}}"class="btn btn-primary">در دست انجام</a>
+                                    @else
+                                        <a href="/settlements/inquiry?withdraw_ref_id={{$value->withdraw_ref_id}}"class="btn btn-primary">خاتمه یافته</a>
+                                    @endif
                                 </td>
                                 <td>{{ $value->created_at }}</td>
                             </tr>
