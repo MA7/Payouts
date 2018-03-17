@@ -302,7 +302,7 @@ class HomeController extends Controller
                 $err = '';
                 $err .= 'وضعیت تراکنش : ' . $content['data']['confirmed'] . ' <br> ';
                 $err .= 'توضیحات تراکنش : ' . $content['data']['description'] . ' <br> ';
-                $err .= 'reconciled_at تراکنش : ' . $content['data']['reconciled_at'] . ' <br> ';
+                $err .= 'تاریخ تسویه : ' . $content['data']['reconciled_at'] . ' <br> ';
 
                 if ($content['data']['confirmed'] == 'confirmed') {
                     $settlement->status = 1;
@@ -322,7 +322,7 @@ class HomeController extends Controller
         if(!empty($_GET['withdraw_ref_id'])){
             return redirect('/settlementShow/'.$_GET['withdraw_ref_id']);
         }
-        return redirect('/settlements');
+        return redirect('/settlements?s=0');
 
     }
 
