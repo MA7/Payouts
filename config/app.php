@@ -25,7 +25,7 @@ return [
     |
     */
 
-    'zarinpal_api_token' => '41f622e5ee72feff7b01f0e8ac679467e697d18cd0b30abe622474b96df637ab986dfe1357955403',
+    'zarinpal_api_token' => 'MUST_BE_FILLED',
 
     /*
     |--------------------------------------------------------------------------
